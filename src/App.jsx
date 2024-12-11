@@ -4,11 +4,11 @@ import AboutUs from './pages/AboutUs'
 import DefaultLayout from './layout/DefaultLayout'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PostDetail from './pages/PostDetail'
-// import { PostProvider } from "./context/PostContext";
+import { PostProvider } from "./context/PostContext";
 function App() {
   return (
-
-    <BrowserRouter>
+    <PostProvider>
+      <BrowserRouter>
       <Routes>
         <Route element={<DefaultLayout/>}>
           <Route path='/' element={<HomePage />} />
@@ -18,6 +18,8 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </PostProvider>
+
   )
 
 
