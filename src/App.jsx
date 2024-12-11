@@ -4,12 +4,33 @@ import AboutUs from './pages/AboutUs'
 import DefaultLayout from './layout/DefaultLayout'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PostDetail from './pages/PostDetail'
-
+import PostContext from './context/PostContext.js'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+const API_BASE_URI = 'http://localhost:3000/'
 
 function App() {
-  return (
 
- 
+  const [posts, setPosts] = useState([])
+  const [error, setError] = useState('')
+
+
+  useEffect(() => {
+    async function fetchAllPosts() {
+      try {
+        const response = await axios.get(`${API_BASE_URI}posts`)
+        setPosts(response.data)
+      } catch (error) {
+        console.error(error)
+        setError('Errore nel recuperare la lista dei post')
+      }
+    }
+
+    fetchAllPosts();
+  }, []);
+
+  return (
+    <PostContext.Provider value={{ posts }}>
       <BrowserRouter>
         <Routes>
           <Route element={<DefaultLayout />}>
@@ -20,6 +41,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+    </PostContext.Provider>
 
 
   )

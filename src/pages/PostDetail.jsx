@@ -1,46 +1,16 @@
 import { Link } from 'react-router-dom'
-import axios from 'axios'
-import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import style from './PostDetail.module.css'
+import { useContext } from 'react'
+import PostContext from '../context/PostContext'
 
 const API_BASE_URI = 'http://localhost:3000/'
 
 export default function PostDetail() {
     const { postId } = useParams()
-    const [post, setPost] = useState(null)
-    const [posts, setPosts] = useState([])
-    const [error, setError] = useState(null)
+    const { posts } = useContext(PostContext)
 
-    useEffect(() => {
-        async function fetchPost() {
-            try {
-                const response = await axios.get(`${API_BASE_URI}posts/${postId}`)
-                setPost(response.data)
-            } catch (error) {
-                console.error(error)
-                setError('Nessun post trovato')
-            }
-        }
-
-        async function fetchAllPosts() {
-            try {
-                const response = await axios.get(`${API_BASE_URI}posts`)
-                setPosts(response.data)
-            } catch (error) {
-                console.error(error)
-                setError('Errore nel recuperare la lista dei post')
-            }
-        }
-
-        fetchPost()
-        fetchAllPosts()
-    }, [postId])
-
-
-    if (error) {
-        return <div>{error}</div>
-    }
+    const post = posts.find(p => p.id === parseInt(postId))
 
     if (!post) {
         return <div>Post non trovato</div>
@@ -50,7 +20,7 @@ export default function PostDetail() {
     const prevPost = posts[currentIndex - 1]
     const nextPost = posts[currentIndex + 1]
 
-    const { title, content, image, tags } = post
+    const { title, content, image, tags, id } = post
 
     return (
         <div className='container'>
@@ -58,8 +28,8 @@ export default function PostDetail() {
             <h1>{title}</h1>
             <img className={style.image} src={`${API_BASE_URI}imgs/posts/${image}`} />
             <div className={style.tagContainer}>
-                {tags.map(tag => (
-                    <div>{tag}</div>
+                {tags.map((tag, i) => (
+                    <div key={i}>{tag}</div>
                 )
                 )}
             </div>
